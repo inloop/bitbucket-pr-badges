@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Better Bitbucket
 // @description Improved pull-request reviews
-// @version    1.7
+// @version    1.7.1
 // @author     Juraj Novák, Inloop
 // @namespace  http://inloop.eu/
 // @match      https://bitbucket.org/*
@@ -54,7 +54,6 @@ function checkForDasboard(url) {
 	
 	if (isDashboard) {
 		if (!loadingStatuses && !hasLoadedStatuses) {
-			loadingStatuses = true;
 			dashboardInsertStatuses(buttons);
 		}
 	}
@@ -127,6 +126,15 @@ $(document).ready(function() {
 });
 
 function dashboardInsertStatuses(buttons) {
+	var items = $(".maskable table .iterable-item");
+	
+	//Check If has PR items
+	if (items.length === 0) {
+		return;
+	}
+	
+	loadingStatuses = true;
+	
 	var titleDashboard = $(".section-title h1");
 	var statusLoading = "<span class='" + spanLoadingClass + "' style='color:silver;font-size:18px'>" + loadingReviewsText + "</span>";
 	if (titleDashboard.length) {
@@ -140,7 +148,7 @@ function dashboardInsertStatuses(buttons) {
 			div.append(statusLoading);
 		}
 	}
-	$(".maskable table .iterable-item").each(function () {	
+	items.each(function () {	
 		var url = $(this).find(".execute").attr("href");
 		var urlPart = url.substring(1, url.lastIndexOf("/"))
 		if (urlPart.length) {
